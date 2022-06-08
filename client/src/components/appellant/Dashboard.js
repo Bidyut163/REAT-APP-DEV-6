@@ -32,8 +32,8 @@ const Dashboard = ({ getAppealsAppellant, appeal: { appeals, loading } }) => {
                             <thead>
                                 <tr>
                                     <th>id</th>
-                                    <th>Name</th>
-                                    <th>Address</th>
+                                    <th>Appellant</th>
+                                    <th>Respondent</th>
                                     <th>View</th>
                                 </tr>
                             </thead>

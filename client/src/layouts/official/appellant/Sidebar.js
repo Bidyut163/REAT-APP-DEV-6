@@ -22,9 +22,15 @@ const Sidebar = () => {
             <hr className="sidebar-divider my-0" />
 
             <li className="nav-item active">
-                <Link className="nav-link" to="/official/admin/dashboard">
+                <Link className="nav-link" to="/appellant/dashboard">
                     <i className="fas fa-fw fa-tachometer-alt"></i>
                     <span>APPELLANT</span>
+                </Link>
+            </li>
+            <li className="nav-item active">
+                <Link className="nav-link" to="/appellant/create-appeal">
+                    <i className="fas fa-fw fa-plus"></i>
+                    <span>Create Appeal</span>
                 </Link>
             </li>
 
@@ -57,12 +63,6 @@ const Sidebar = () => {
                             to="/official/receptionist/appeals"
                         >
                             All Appeals
-                        </Link>
-                        <Link
-                            className="collapse-item"
-                            to="/official/admin/users"
-                        >
-                            View
                         </Link>
                     </div>
                 </div>
