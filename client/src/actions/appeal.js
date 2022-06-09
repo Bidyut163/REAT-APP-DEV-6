@@ -8,6 +8,7 @@ import {
     GET_APPEALS_REGISTRAR,
     GET_APPEAL_REGISTRAR,
     GET_APPEALS_APPELLANT,
+    GET_APPEAL_APPELLANT,
 } from './types';
 
 // Get List of Appeals with Receptionist
@@ -148,6 +149,26 @@ export const getAppealsAppellant = () => async (dispatch) => {
 
         dispatch({
             type: GET_APPEALS_APPELLANT,
+            payload: res.data,
+        });
+    } catch (err) {
+        dispatch({
+            type: APPEAL_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+    }
+};
+
+// Get a single Appeal by an Appellant
+export const appellantGetAppeal = (id) => async (dispatch) => {
+    try {
+        const res = await axios.get(`/api/appellant/appeals/${id}`);
+
+        dispatch({
+            type: GET_APPEAL_APPELLANT,
             payload: res.data,
         });
     } catch (err) {

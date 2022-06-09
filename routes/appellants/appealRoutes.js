@@ -170,4 +170,25 @@ router.get('/appeals', auth, async (req, res) => {
     }
 });
 
+// @route GET api/appellant/appeals/:id
+// @desc  View single appeal
+// @access Private
+router.get('/appeals/:id', auth, async (req, res) => {
+    try {
+        const appeal = await Appeal.findOne({
+            where: {
+                id: req.params.id,
+            },
+        });
+
+        if (appeal.appellantId !== req.user.id) {
+            return res.json({ msg: 'No such appeal' });
+        }
+
+        res.json(appeal);
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error');
+    }
+});
 module.exports = router;

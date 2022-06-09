@@ -60,7 +60,7 @@ const Sidebar = () => {
                         <h6 className="collapse-header">Custom Components:</h6>
                         <Link
                             className="collapse-item"
-                            to="/official/receptionist/appeals"
+                            to="/appellant/dashboard"
                         >
                             All Appeals
                         </Link>
