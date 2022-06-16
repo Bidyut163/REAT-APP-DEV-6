@@ -18,6 +18,24 @@ const AppealItem = ({
                     view
                 </Link>
             </td>
+            <td>
+                <Link
+                    to={`/official/receptionist/appeals/${id}`}
+                    className="btn btn-sm btn-info"
+                    style={{ fontSize: '.7rem', padding: '0 .2rem' }}
+                >
+                    upload
+                </Link>
+            </td>
+            <td>
+                <Link
+                    to={`/official/receptionist/appeals/${id}`}
+                    className="btn btn-sm btn-success"
+                    style={{ fontSize: '.7rem', padding: '0 .2rem' }}
+                >
+                    Forward
+                </Link>
+            </td>
         </tr>
     );
 };

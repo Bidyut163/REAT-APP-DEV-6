@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { registrarGetAppeal } from '../../../actions/appeal';
-import { Link } from 'react-router-dom';
-// import { forwardToRegistrar } from '../../../actions/appeal';
+
+import axios from 'axios';
+const fileDownload = require('js-file-download');
 
 const AppealShow = ({ registrarGetAppeal, match, appeal: { appeal } }) => {
     useEffect(() => {
@@ -218,7 +219,7 @@ const AppealShow = ({ registrarGetAppeal, match, appeal: { appeal } }) => {
                                                 </span>
                                             </p>
                                             <p className="text-center">OR</p>
-                                            <p>
+                                            <div>
                                                 <span className="fw-bold">
                                                     If the appeal is filed after
                                                     the expiry of the limitation
@@ -232,7 +233,7 @@ const AppealShow = ({ registrarGetAppeal, match, appeal: { appeal } }) => {
                                                         ? appeal.reason_for_delay
                                                         : ''}
                                                 </p>
-                                            </p>
+                                            </div>
                                         </div>
 
                                         <div className="facts-of-case mb-5">
@@ -392,7 +393,7 @@ const AppealShow = ({ registrarGetAppeal, match, appeal: { appeal } }) => {
                 </div>
             </div>
 
-            <div className="row">
+            {/* <div className="row">
                 <div className="col-lg-3">
                     <Link
                         to={`/official/registrar/appeals/${appeal.id}/checklist`}
@@ -403,6 +404,28 @@ const AppealShow = ({ registrarGetAppeal, match, appeal: { appeal } }) => {
                         </span>
                         <span className="text">Checklist(Form A)</span>
                     </Link>
+                    <div className="my-2"></div>
+                </div>
+            </div> */}
+
+            <div className="row mb-3">
+                <div className="col-lg-3">
+                    <button
+                        onClick={async () => {
+                            const res = await axios.get(
+                                `/api/download/${appeal.id}`,
+                                { responseType: 'blob' }
+                            );
+
+                            fileDownload(res.data, appeal.id + '.jpg');
+                        }}
+                        className="btn btn-primary btn-icon-split"
+                    >
+                        <span className="icon text-white-50">
+                            <i className="fas fa-download"></i>
+                        </span>
+                        <span className="text">Download Files</span>
+                    </button>
                     <div className="my-2"></div>
                 </div>
             </div>

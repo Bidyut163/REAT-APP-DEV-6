@@ -34,6 +34,8 @@ const ReceptionistPanel = ({ getAppeals, appeal: { appeals, loading } }) => {
                                     <th>Appellant</th>
                                     <th>Respondent</th>
                                     <th>View</th>
+                                    <th>Upload</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
 

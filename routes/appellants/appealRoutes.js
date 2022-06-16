@@ -182,7 +182,7 @@ router.get('/appeals/:id', auth, async (req, res) => {
         });
 
         if (appeal.appellantId !== req.user.id) {
-            return res.json({ msg: 'No such appeal' });
+            return res.status(400).json({ msg: 'No such appeal' });
         }
 
         res.json(appeal);

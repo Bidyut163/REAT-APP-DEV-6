@@ -1,20 +1,74 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { getAppeal } from '../../../actions/appeal';
 import { withRouter } from 'react-router-dom';
 import { forwardToRegistrar } from '../../../actions/appeal';
+import { upload } from '../../../actions/files';
+import Message from '../../common/Message';
+import ProgressBar from '../../common/ProgressBar';
 
 const AppealShow = ({
     getAppeal,
     match,
     appeal: { appeal },
     forwardToRegistrar,
+    upload,
+    files,
     history,
 }) => {
     useEffect(() => {
         const { id } = match.params;
         getAppeal(id);
     }, [getAppeal]);
+
+    const [file, setFile] = useState('');
+    const [filename, setFilename] = useState('Choose File');
+    const [message, setMessage] = useState('');
+    const [uploadPercentage, setUploadPercentage] = useState(0);
+
+    const onFileChange = (e) => {
+        setFile(e.target.files[0]);
+        setFilename(e.target.files[0].name);
+    };
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+
+        const { id } = appeal;
+        upload(id, file, setMessage, setUploadPercentage);
+        // const config = {
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data',
+        //     },
+        //     onUploadProgress: (progressEvent) => {
+        //         setUploadPercentage(
+        //             parseInt(
+        //                 Math.round(
+        //                     (progressEvent.loaded * 100) / progressEvent.total
+        //                 )
+        //             )
+        //         );
+
+        //         // Clear percentage
+        //         // setTimeout(() => setUploadPercentage(0), 10000);
+        //     },
+        // };
+
+        // const formData = new FormData();
+        // formData.append('file', file);
+
+        // try {
+        //     await axios.post(`/api/upload/${id}`, formData, config);
+
+        //     setMessage('File Uploaded');
+        // } catch (err) {
+        //     if (err.response.status === 500) {
+        //         setMessage('there was a problem with the server');
+        //     } else {
+        //         setMessage(err.response.data.msg);
+        //     }
+        // }
+    };
 
     const onForward = () => {
         const { id } = appeal;
@@ -229,7 +283,7 @@ const AppealShow = ({
                                                 </span>
                                             </p>
                                             <p className="text-center">OR</p>
-                                            <p>
+                                            <div>
                                                 <span className="fw-bold">
                                                     If the appeal is filed after
                                                     the expiry of the limitation
@@ -243,7 +297,7 @@ const AppealShow = ({
                                                         ? appeal.reason_for_delay
                                                         : ''}
                                                 </p>
-                                            </p>
+                                            </div>
                                         </div>
 
                                         <div className="facts-of-case mb-5">
@@ -403,19 +457,52 @@ const AppealShow = ({
                 </div>
             </div>
 
-            <div className="row">
+            <div className="row mb-3">
+                {message ? <Message msg={message} /> : null}
                 <div className="col-lg-3">
-                    <button
-                        onClick={onForward}
-                        className="btn btn-success btn-icon-split"
-                    >
-                        <span className="icon text-white-50">
-                            <i className="fas fa-check"></i>
-                        </span>
-                        <span className="text">Forward to Registrar</span>
-                    </button>
+                    <form onSubmit={(e) => onSubmit(e)}>
+                        <div className="custom-file mb-3">
+                            <input
+                                type="file"
+                                className="custom-file-input"
+                                id="customFile"
+                                onChange={(e) => onFileChange(e)}
+                            />
+                            <label
+                                className="custom-file-label"
+                                htmlFor="customFile"
+                            >
+                                {filename}
+                            </label>
+                        </div>
+                        <ProgressBar percentage={uploadPercentage} />
+                        <div className="d-grid gap-2">
+                            <input
+                                type="submit"
+                                value="Upload"
+                                className="btn btn-primary mt-4"
+                            />
+                        </div>
+                    </form>
                     <div className="my-2"></div>
                 </div>
+            </div>
+
+            <div className="row">
+                {files && Number(files.appealId) === appeal.id ? (
+                    <div className="col-lg-3">
+                        <button
+                            onClick={onForward}
+                            className="btn btn-success btn-icon-split"
+                        >
+                            <span className="icon text-white-50">
+                                <i className="fas fa-check"></i>
+                            </span>
+                            <span className="text">Forward to Registrar</span>
+                        </button>
+                        <div className="my-2"></div>
+                    </div>
+                ) : null}
             </div>
         </div>
     );
@@ -424,9 +511,12 @@ const AppealShow = ({
 const mapStateToProps = (state) => {
     return {
         appeal: state.appeal,
+        files: state.files,
     };
 };
 
-export default connect(mapStateToProps, { getAppeal, forwardToRegistrar })(
-    withRouter(AppealShow)
-);
+export default connect(mapStateToProps, {
+    getAppeal,
+    forwardToRegistrar,
+    upload,
+})(withRouter(AppealShow));

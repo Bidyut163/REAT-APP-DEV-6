@@ -20,7 +20,7 @@ export const createChecklist = (formData, id, history) => async (dispatch) => {
             type: CREATE_CHECKLIST,
             payload: res.data,
         });
-        history.push(`/official/registrar/appeals/${id}`);
+        history.push(`/official/registrar/appeals`);
     } catch (err) {
         dispatch({
             type: CHECKLIST_ERROR,
