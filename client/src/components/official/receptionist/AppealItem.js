@@ -28,13 +28,12 @@ const AppealItem = ({
                 </Link>
             </td>
             <td>
-                <Link
-                    to={`/official/receptionist/appeals/${id}`}
+                <button
                     className="btn btn-sm btn-success"
                     style={{ fontSize: '.7rem', padding: '0 .2rem' }}
                 >
                     Forward
-                </Link>
+                </button>
             </td>
         </tr>
     );

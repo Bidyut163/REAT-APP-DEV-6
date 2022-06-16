@@ -3,13 +3,20 @@ const router = express.Router();
 const { validationResult } = require('express-validator');
 const validateInputAppeal = require('../../validation/appeal');
 
+const fs = require('fs');
+const path = require('path');
+
+// Middlewares
 const auth = require('../../middleware/auth');
+
+// PdfKit
+const PDFDocument = require('pdfkit');
 
 //  Model
 const Appeal = require('../../models/Appeal');
 const AppealState = require('../../models/AppealState');
 
-// @route Post api/appellant/appeal
+// @route Post api/appellant/appeals
 // @desc  Create an  Appeal
 // @access Private
 
@@ -191,4 +198,66 @@ router.get('/appeals/:id', auth, async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// @route POST api/appellant/appeals/:id/printappeal
+// @desc  Download filled form C for an appeal
+// @access Private
+router.get('/appeals/:id/printappeal', auth, async (req, res) => {
+    try {
+        const appeal = await Appeal.findOne({
+            where: {
+                id: req.params.id,
+            },
+        });
+
+        if (!appeal) {
+            return next(new Error('No appeal found'));
+        }
+
+        if (appeal.appellantId.toString() !== req.user.id.toString()) {
+            return next(new Error('Unauthorized'));
+        }
+
+        const appealName = 'appeal-' + appeal.id + '.pdf';
+        const appealPath = path.join('data', 'appeals', appealName);
+
+        const pdfDoc = new PDFDocument();
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader(
+            'Content-Disposition',
+            'attachment; fileName="' + appealName + '"'
+        );
+        pdfDoc.pipe(fs.createWriteStream(appealPath));
+        pdfDoc.pipe(res);
+
+        // Design of the pdf document
+        pdfDoc.font('Times-Roman');
+        pdfDoc.fontSize(12).text('FORM C', { align: 'center' }).moveDown(0.5);
+        pdfDoc
+            .fontSize(12)
+            .text('APPEAL TO APPELLATE TRIBUNAL', { align: 'center' })
+            .moveDown(0.5);
+        pdfDoc
+            .fontSize(12)
+            .text('Appeal under Section 44', { align: 'center' })
+            .moveDown(0.5);
+        pdfDoc
+            .fontSize(11)
+            .text(
+                'Name of the appellant: ' +
+                    appeal.first_name +
+                    ' ' +
+                    appeal.last_name,
+                {
+                    align: 'left',
+                }
+            );
+
+        pdfDoc.end();
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 module.exports = router;

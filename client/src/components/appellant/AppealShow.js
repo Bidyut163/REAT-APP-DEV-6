@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { appellantGetAppeal } from '../../actions/appeal';
+import axios from 'axios';
+const fileDownload = require('js-file-download');
 
 const AppealShow = ({ appellantGetAppeal, match, appeal: { appeal } }) => {
     useEffect(() => {
@@ -14,10 +16,28 @@ const AppealShow = ({ appellantGetAppeal, match, appeal: { appeal } }) => {
             <h1 className="h3 mb-2 text-gray-800">All Details</h1>
             <p className="mb-4">All the details</p>
             <div className="card shadow mb-4">
-                <div className="card-header py-3">
+                <div className="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 className="m-0 font-weight-bold text-primary">
                         Details of the Appeal
                     </h6>
+                    <button
+                        className="btn btn-sm btn-primary fw-bold"
+                        onClick={async () => {
+                            const res = await axios.get(
+                                `/api/appellant/appeals/${appeal.id}/printappeal`,
+                                {
+                                    responseType: 'blob',
+                                }
+                            );
+
+                            fileDownload(
+                                res.data,
+                                'appeal-' + appeal.id + '.pdf'
+                            );
+                        }}
+                    >
+                        <i class="fa-solid fa-download"></i> Download PDF
+                    </button>
                 </div>
                 <div className="card-body">
                     <div className="container mt-5">

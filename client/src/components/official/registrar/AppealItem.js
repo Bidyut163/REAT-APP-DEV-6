@@ -29,7 +29,7 @@ const AppealItem = ({
                             responseType: 'blob',
                         });
 
-                        fileDownload(res.data, id + '.pdf');
+                        fileDownload(res.data, 'doc-appeal-' + id + '.pdf');
                     }}
                 >
                     <i className="fas fa-download"></i> download
